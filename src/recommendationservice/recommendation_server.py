@@ -20,7 +20,7 @@ import time
 import traceback
 from concurrent import futures
 
-import googlecloudprofiler
+#import googlecloudprofiler
 from google.auth.exceptions import DefaultCredentialsError
 import grpc
 
@@ -38,30 +38,30 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 from logger import getJSONLogger
 logger = getJSONLogger('recommendationservice-server')
 
-def initStackdriverProfiling():
-  project_id = None
-  try:
-    project_id = os.environ["GCP_PROJECT_ID"]
-  except KeyError:
-    # Environment variable not set
-    pass
-
-  for retry in range(1,4):
-    try:
-      if project_id:
-        googlecloudprofiler.start(service='recommendation_server', service_version='1.0.0', verbose=0, project_id=project_id)
-      else:
-        googlecloudprofiler.start(service='recommendation_server', service_version='1.0.0', verbose=0)
-      logger.info("Successfully started Stackdriver Profiler.")
-      return
-    except (BaseException) as exc:
-      logger.info("Unable to start Stackdriver Profiler Python agent. " + str(exc))
-      if (retry < 4):
-        logger.info("Sleeping %d seconds to retry Stackdriver Profiler agent initialization"%(retry*10))
-        time.sleep (1)
-      else:
-        logger.warning("Could not initialize Stackdriver Profiler after retrying, giving up")
-  return
+#def initStackdriverProfiling():
+#  project_id = None
+#  try:
+#    project_id = os.environ["GCP_PROJECT_ID"]
+#  except KeyError:
+#    # Environment variable not set
+#    pass
+#
+#  for retry in range(1,4):
+#    try:
+#      if project_id:
+#        googlecloudprofiler.start(service='recommendation_server', service_version='1.0.0', verbose=0, project_id=project_id)
+#      else:
+#        googlecloudprofiler.start(service='recommendation_server', service_version='1.0.0', verbose=0)
+#      logger.info("Successfully started Stackdriver Profiler.")
+#      return
+#    except (BaseException) as exc:
+#      logger.info("Unable to start Stackdriver Profiler Python agent. " + str(exc))
+#      if (retry < 4):
+#        logger.info("Sleeping %d seconds to retry Stackdriver Profiler agent initialization"%(retry*10))
+#        time.sleep (1)
+#      else:
+#        logger.warning("Could not initialize Stackdriver Profiler after retrying, giving up")
+#  return
 
 class RecommendationService(demo_pb2_grpc.RecommendationServiceServicer):
     def ListRecommendations(self, request, context):
@@ -94,14 +94,14 @@ class RecommendationService(demo_pb2_grpc.RecommendationServiceServicer):
 if __name__ == "__main__":
     logger.info("initializing recommendationservice")
 
-    try:
-      if "DISABLE_PROFILER" in os.environ:
-        raise KeyError()
-      else:
-        logger.info("Profiler enabled.")
-        initStackdriverProfiling()
-    except KeyError:
-        logger.info("Profiler disabled.")
+#    try:
+#      if "DISABLE_PROFILER" in os.environ:
+#        raise KeyError()
+#      else:
+#        logger.info("Profiler enabled.")
+#        initStackdriverProfiling()
+#    except KeyError:
+#        logger.info("Profiler disabled.")
 
     try:
       grpc_client_instrumentor = GrpcInstrumentorClient()
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     except Exception as e:
         logger.warn(f"Exception on Cloud Trace setup: {traceback.format_exc()}, tracing disabled.") 
 
-    port = os.environ.get('PORT', "8080")
+    port = os.environ.get('PORT', "5002")
     catalog_addr = os.environ.get('PRODUCT_CATALOG_SERVICE_ADDR', '')
     if catalog_addr == "":
         raise Exception('PRODUCT_CATALOG_SERVICE_ADDR environment variable not set')

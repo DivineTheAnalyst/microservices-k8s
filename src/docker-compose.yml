@@ -1,0 +1,107 @@
+services:
+  emailservice:
+    build:
+      context: ./emailservice
+      dockerfile: Dockerfile
+    container_name: emailservice
+    ports:
+      - "5001:5001"
+
+  shippingservice:
+    build:
+      context: ./shippingservice
+      dockerfile: Dockerfile
+    container_name: shippingservice
+    ports:
+      - "8081:8081"
+
+  recommendationservice:
+    build:
+      context: ./recommendationservice
+      dockerfile: Dockerfile
+    container_name: recommendationservice
+    ports:
+      - "5002:5002"
+    environment:
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:50051
+
+  cartservice:
+    build:
+      context: ./cartservice/src
+      dockerfile: Dockerfile
+    container_name: cartservice
+    ports:
+      - "7070:7070"
+    environment:
+      - REDIS_HOST=redis:6379
+
+  redis:
+    image: redis:6.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  productcatalogservice:
+    build:
+      context: ./productcatalogservice
+      dockerfile: Dockerfile
+    container_name: productcatalogservice
+    ports:
+      - "50051:50051"
+
+  currencyservice:
+    build:
+      context: ./currencyservice
+      dockerfile: Dockerfile
+    container_name: currencyservice
+    ports:
+      - "3000:3000"
+    environment:
+      - GOOGLE_CLOUD_PROJECT=dummy-project
+
+  paymentservice:
+    build:
+      context: ./paymentservice
+      dockerfile: Dockerfile
+    container_name: paymentservice
+    ports:
+      - "3002:3002"
+
+  checkoutservice:
+    build:
+      context: ./checkoutservice
+      dockerfile: Dockerfile
+    container_name: checkoutservice
+    ports:
+      - "5050:5050"
+    environment:
+      - SHIPPING_SERVICE_ADDR=shippingservice:8081
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:50051
+      - CART_SERVICE_ADDR=cartservice:7070
+      - PAYMENT_SERVICE_ADDR=paymentservice:3002
+      - CURRENCY_SERVICE_ADDR=currencyservice:3000
+
+  adservice:
+    build:
+      context: ./adservice
+      dockerfile: Dockerfile
+    container_name: adservice
+    ports:
+      - "9555:9555"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "8080:8080"
+    environment:
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:50051
+      - CURRENCY_SERVICE_ADDR=currencyservice:3000
+      - CART_SERVICE_ADDR=cartservice:7070
+      - CHECKOUT_SERVICE_ADDR=checkoutservice:5050
+      - RECOMMENDATION_SERVICE_ADDR=recommendationservice:5002
+      - SHIPPING_SERVICE_ADDR=shippingservice:8081
+      - AD_SERVICE_ADDR=adservice:9555
+      

@@ -117,3 +117,10 @@ applicationDistribution.into('bin') {
     from(adServiceClient)
     fileMode = 0755
 }
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'hipstershop.AdService' // Replace with your main class
+        )
+    }
+}

@@ -1,24 +1,18 @@
 services:
   emailservice:
-    build:
-      context: ./emailservice
-      dockerfile: Dockerfile
+    image: ijeawele/emailservice:v1.0
     container_name: emailservice
     ports:
       - "5001:5001"
 
   shippingservice:
-    build:
-      context: ./shippingservice
-      dockerfile: Dockerfile
+    image: ijeawele/shippingservice:v1.0
     container_name: shippingservice
     ports:
       - "8081:8081"
 
   recommendationservice:
-    build:
-      context: ./recommendationservice
-      dockerfile: Dockerfile
+    image: ijeawele/recommendationservice:v1.0
     container_name: recommendationservice
     ports:
       - "5002:5002"
@@ -26,9 +20,7 @@ services:
       - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
 
   cartservice:
-    build:
-      context: ./cartservice/src
-      dockerfile: Dockerfile
+    image: ijeawele/cartservice:v1.0
     container_name: cartservice
     ports:
       - "7070:7070"
@@ -42,20 +34,15 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-  
 
   productcatalogservice:
-    build:
-      context: ./productcatalogservice
-      dockerfile: Dockerfile
+    image: ijeawele/productcatalogservice:v1.0
     container_name: productcatalogservice
     ports:
       - "3550:3550"
 
   currencyservice:
-    build:
-      context: ./currencyservice
-      dockerfile: Dockerfile
+    image: ijeawele/currencyservice:v1.0
     container_name: currencyservice
     ports:
       - "7000:7000"
@@ -63,9 +50,7 @@ services:
       - DISABLE_PROFILER=true
 
   paymentservice:
-    build:
-      context: ./paymentservice
-      dockerfile: Dockerfile
+    image: ijeawele/paymentservice:v1.0
     container_name: paymentservice
     ports:
       - "3002:3002"
@@ -74,9 +59,7 @@ services:
       - DISABLE_PROFILER=true
 
   checkoutservice:
-    build:
-      context: ./checkoutservice
-      dockerfile: Dockerfile
+    image: ijeawele/checkoutservice:v1.0
     container_name: checkoutservice
     ports:
       - "5050:5050"
@@ -89,17 +72,13 @@ services:
       - EMAIL_SERVICE_ADDR=emailservice:5001
 
   adservice:
-    build:
-      context: ./adservice
-      dockerfile: Dockerfile
+    image: ijeawele/adservice:v1.0
     container_name: adservice
     ports:
       - "9555:9555"
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ijeawele/frontend:v1.0
     container_name: frontend
     ports:
       - "8080:8080"
@@ -116,9 +95,7 @@ services:
       - SHOPPING_ASSISTANT_SERVICE_ADDR=shoppingassistantservice:8005
 
   shoppingassistantservice:
-    build:
-      context: ./shoppingassistantservice
-      dockerfile: Dockerfile
+    image: ijeawele/shoppingassistantservice:v1.0
     container_name: shoppingassistantservice
     ports:
       - "8005:8005"
@@ -131,5 +108,6 @@ services:
       - ALLOYDB_CLUSTER_NAME=dummy-cluster-name
       - ALLOYDB_INSTANCE_NAME=dummy-instance-name
       - ALLOYDB_SECRET_NAME=dummy-secret-name
+
 volumes:
   redis_data:

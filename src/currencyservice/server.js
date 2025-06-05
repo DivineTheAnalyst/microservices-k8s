@@ -31,13 +31,13 @@ if (process.env.DISABLE_PROFILER) {
   logger.warn("Profiler not started: GOOGLE_CLOUD_PROJECT is not set.");
 } else {
   logger.info("Profiler enabled.");
-  require('@google-cloud/profiler').start({
-    serviceContext: {
-      service: 'currencyservice',
-      version: '1.0.0',
-      projectId: process.env.GOOGLE_CLOUD_PROJECT
-    }
-  });
+//  require('@google-cloud/profiler').start({
+//    serviceContext: {
+//      service: 'currencyservice',
+//      version: '1.0.0',
+//      projectId: process.env.GOOGLE_CLOUD_PROJECT
+//    }
+//  });
 }
 
 

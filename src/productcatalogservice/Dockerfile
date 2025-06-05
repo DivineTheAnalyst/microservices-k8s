@@ -10,7 +10,7 @@ COPY . .
 
 RUN go build -o /app/productcatalogservice 
 
-EXPOSE 50051
+EXPOSE 3550
 
 CMD ["/app/productcatalogservice"]
 

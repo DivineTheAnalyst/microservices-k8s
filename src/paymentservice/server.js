@@ -104,3 +104,9 @@ class HipsterShopServer {
 HipsterShopServer.PORT = process.env.PORT;
 
 module.exports = HipsterShopServer;
+
+if (require.main === module) {
+  const protoRoot = path.join(__dirname, '../protos');
+  const server = new HipsterShopServer(protoRoot);
+  server.listen();
+}

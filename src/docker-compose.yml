@@ -23,7 +23,7 @@ services:
     ports:
       - "5002:5002"
     environment:
-      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:50051
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
 
   cartservice:
     build:
@@ -40,6 +40,9 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+  
 
   productcatalogservice:
     build:
@@ -47,7 +50,7 @@ services:
       dockerfile: Dockerfile
     container_name: productcatalogservice
     ports:
-      - "50051:50051"
+      - "3550:3550"
 
   currencyservice:
     build:
@@ -55,9 +58,9 @@ services:
       dockerfile: Dockerfile
     container_name: currencyservice
     ports:
-      - "3000:3000"
+      - "7000:7000"
     environment:
-      - GOOGLE_CLOUD_PROJECT=dummy-project
+      - DISABLE_PROFILER=true
 
   paymentservice:
     build:
@@ -66,6 +69,9 @@ services:
     container_name: paymentservice
     ports:
       - "3002:3002"
+    environment:
+      - PORT=3002
+      - DISABLE_PROFILER=true
 
   checkoutservice:
     build:
@@ -76,10 +82,11 @@ services:
       - "5050:5050"
     environment:
       - SHIPPING_SERVICE_ADDR=shippingservice:8081
-      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:50051
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
       - CART_SERVICE_ADDR=cartservice:7070
       - PAYMENT_SERVICE_ADDR=paymentservice:3002
-      - CURRENCY_SERVICE_ADDR=currencyservice:3000
+      - CURRENCY_SERVICE_ADDR=currencyservice:7000
+      - EMAIL_SERVICE_ADDR=emailservice:5001
 
   adservice:
     build:
@@ -97,11 +104,32 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:50051
-      - CURRENCY_SERVICE_ADDR=currencyservice:3000
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
+      - PAYMENT_SERVICE_ADDR=paymentservice:3002
+      - CURRENCY_SERVICE_ADDR=currencyservice:7000
       - CART_SERVICE_ADDR=cartservice:7070
       - CHECKOUT_SERVICE_ADDR=checkoutservice:5050
       - RECOMMENDATION_SERVICE_ADDR=recommendationservice:5002
       - SHIPPING_SERVICE_ADDR=shippingservice:8081
       - AD_SERVICE_ADDR=adservice:9555
-      
+      - EMAIL_SERVICE_ADDR=emailservice:5001
+      - SHOPPING_ASSISTANT_SERVICE_ADDR=shoppingassistantservice:8005
+
+  shoppingassistantservice:
+    build:
+      context: ./shoppingassistantservice
+      dockerfile: Dockerfile
+    container_name: shoppingassistantservice
+    ports:
+      - "8005:8005"
+    environment:
+      - DISABLE_PROFILER=true
+      - PROJECT_ID=dummy-project-id
+      - REGION=dummy-region
+      - ALLOYDB_DATABASE_NAME=dummy-database-name
+      - ALLOYDB_TABLE_NAME=dummy-table-name
+      - ALLOYDB_CLUSTER_NAME=dummy-cluster-name
+      - ALLOYDB_INSTANCE_NAME=dummy-instance-name
+      - ALLOYDB_SECRET_NAME=dummy-secret-name
+volumes:
+  redis_data:

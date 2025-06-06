@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cartservice
+  template:
+    metadata:
+      labels:
+        app: cartservice
+    spec:
+      containers:
+      - name: cartservice
+        image: ijeawele/cartservice:v1.0
+        ports:
+        - containerPort: 7070
+        env:
+        - name: REDIS_HOST
+          value: "redis:6379"

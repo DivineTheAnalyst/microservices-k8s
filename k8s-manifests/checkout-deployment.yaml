@@ -30,3 +30,5 @@ spec:
           value: "checkoutservice:5050"
         - name: PAYMENT_SERVICE_ADDR
           value: "paymentservice:3002"
+        - name: EMAIL_SERVICE_ADDR
+          value: "emailservice:5001"

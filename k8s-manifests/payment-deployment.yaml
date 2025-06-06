@@ -22,3 +22,17 @@ spec:
           value: "3002"
         - name: DISABLE_PROFILER
           value: "true"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paymentservice
+spec:
+  selector:
+    app: paymentservice
+  ports:
+  - protocol: TCP
+    port: 3002
+    targetPort: 3002
+  type: ClusterIP

@@ -34,3 +34,18 @@ spec:
           value: "dummy-instance-name"
         - name: ALLOYDB_SECRET_NAME
           value: "dummy-secret-name"  
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: shoppingassistantservice
+spec:
+  selector:
+    app: shoppingassistantservice
+  ports:
+  - protocol: TCP
+    port: 8005
+    targetPort: 8005
+  type: ClusterIP

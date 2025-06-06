@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-assistant-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shoppingassistantservice
+  template:
+    metadata:
+      labels:
+        app: shoppingassistantservice
+    spec:
+      containers:
+      - name: shoppingassistantservice
+        image: ijeawele/shoppingassistantservice:v1.0
+        ports:
+        - containerPort: 8005
+        env:
+        - name: DISABLE_PROFILER
+          value: "true"
+        - name: PROJECT_ID
+          value: "dummy-project-id"
+        - name: REGION
+          value: "dummy-region"
+        - name: ALLOYDB_DATABASE_NAME
+          value: "dummy-database-name"
+        - name: ALLOYDB_TABLE_NAME
+          value: "dummy-table-name"
+        - name: ALLOYDB_CLUSTER_NAME
+          value: "dummy-cluster-name"
+        - name: ALLOYDB_INSTANCE_NAME
+          value: "dummy-instance-name"
+        - name: ALLOYDB_SECRET_NAME
+          value: "dummy-secret-name"  

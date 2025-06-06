@@ -20,3 +20,18 @@ spec:
         env:
         - name: DISABLE_PROFILER
           value: "true"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: currencyservice
+spec:
+  selector:
+    app: currencyservice
+  ports:
+  - protocol: TCP
+    port: 7000
+    targetPort: 7000
+  type: ClusterIP

@@ -17,3 +17,7 @@ spec:
         image: ijeawele/emailservice:v1.0
         ports:
         - containerPort: 5001
+
+---
+
+apiVersion: v1

@@ -17,9 +17,9 @@ spec:
         image: ijeawele/recommendationservice:v1.0
         ports:
         - containerPort: 5002
-        env:
-        - name: PRODUCT_CATALOG_SERVICE_ADDR
-          value: "productcatalogservice:3550"
+        envFrom:
+        - configMapRef:
+            name: recommendation-config
     
 ---
 

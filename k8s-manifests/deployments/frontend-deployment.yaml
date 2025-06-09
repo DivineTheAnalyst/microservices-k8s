@@ -15,11 +15,32 @@ spec:
       containers:
       - name: frontend
         image: ijeawele/frontend:v1.0
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 3
         ports: 
         - containerPort: 8080
         envFrom:
         - configMapRef:
             name: frontend-config
+        env:
+        - name: DISABLE_PROFILER
+          value: "true"
         resources:
           requests:
             memory: "64Mi"

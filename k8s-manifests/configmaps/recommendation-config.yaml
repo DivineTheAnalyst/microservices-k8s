@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: frontend-config
+  name: recommendation-config
 data:
   PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice:3550"
   

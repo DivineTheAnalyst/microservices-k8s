@@ -37,7 +37,6 @@ spec:
               service:
                 name: {{ include "my-online-boutique.fullname" $ }}
                 port:
-                  number: {{ $.Values.service.port }}
-          {{- end }}
+                  number: {{ $.Values.services.frontend.service.port }}          {{- end }}
     {{- end }}
 {{- end }}

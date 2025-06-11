@@ -1,15 +1,21 @@
+{{- range $serviceName, $config := .Values.services }}
+{{- if $config.enabled }}
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "my-online-boutique.fullname" . }}
+  name: {{ $serviceName }}
   labels:
-    {{- include "my-online-boutique.labels" . | nindent 4 }}
+    app: {{ $serviceName }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ $config.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: {{ $config.service.port }}
+      targetPort: {{ $config.service.port }}
       protocol: TCP
       name: http
   selector:
-    {{- include "my-online-boutique.selectorLabels" . | nindent 4 }}
+    app: {{ $serviceName }}
+{{- end }}
+{{- end }}

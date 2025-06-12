@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host:  a765f9247ecf1444e82fdf7ed797ed29-bc6ee899f3a7f3a6.elb.us-east-1.amazonaws.com
+  - host: acb438f3686b54d0085645d06ba05433-dda3aabb686dd82c.elb.us-east-1.amazonaws.com
     http:
       paths:
       - path: /
@@ -92,4 +92,4 @@ spec:
             name: shoppingassistantservice
             port:
               number: 8005
-      
+

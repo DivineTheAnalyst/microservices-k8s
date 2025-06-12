@@ -47,6 +47,13 @@ spec:
         env:
         - name: PORT
           value: "{{ $config.service.port }}"
+        - name: DISABLE_PROFILER
+          value: "true"
+        envFrom:
+        - configMapRef:
+            name: service-addresses
+        {{- end }}
+        {{- if eq $serviceName "recommendationservice" }}
         envFrom:
         - configMapRef:
             name: service-addresses

@@ -7,7 +7,9 @@ metadata:
   name: {{ $serviceName }}-deployment
   labels:
     app: {{ $serviceName }}
-    chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+    chart: {{ include "my-online-boutique.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
 spec:
   {{- if not $config.autoscaling.enabled }}
   replicas: {{ $config.replicaCount }}
@@ -15,24 +17,36 @@ spec:
   selector:
     matchLabels:
       app: {{ $serviceName }}
+      release: {{ $.Release.Name }}
   template:
     metadata:
       labels:
         app: {{ $serviceName }}
+        release: {{ $.Release.Name }}
     spec:
       containers:
       - name: {{ $serviceName }}
         image: "{{ $config.image.repository }}:{{ $config.image.tag }}"
-        imagePullPolicy: {{ $.Values.global.pullPolicy }}
         ports:
-        - name: http
-          containerPort: {{ $config.service.port }}
-          protocol: TCP
+        - containerPort: {{ $config.service.port }}
         {{- if $config.resources }}
         resources:
           {{- toYaml $config.resources | nindent 10 }}
         {{- end }}
         {{- if eq $serviceName "frontend" }}
+        envFrom:
+        - configMapRef:
+            name: service-addresses
+        {{- end }}
+        {{- if eq $serviceName "checkoutservice" }}
+        envFrom:
+        - configMapRef:
+            name: service-addresses
+        {{- end }}
+        {{- if eq $serviceName "paymentservice" }}
+        env:
+        - name: PORT
+          value: "{{ $config.service.port }}"
         envFrom:
         - configMapRef:
             name: service-addresses

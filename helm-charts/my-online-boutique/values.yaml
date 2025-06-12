@@ -67,7 +67,7 @@ services:
       limits:
         memory: "128Mi"
         cpu: "200m"
-      autoscaling:
+    autoscaling:
       enabled: false
       minReplicas: 1
       maxReplicas: 3
@@ -219,20 +219,102 @@ configMaps:
     AD_SERVICE_ADDR: "adservice:9555"
     PAYMENT_SERVICE_ADDR: "paymentservice:3002"
     EMAIL_SERVICE_ADDR: "emailservice:5001"
+    SHOPPING_ASSISTANT_SERVICE_ADDR: "shoppingassistantservice:8005"
     REDIS_HOST: "redis:6379"
 
 # Ingress configuration
 ingress:
   enabled: true
-  className: "nginx"
+  className: "app-nginx"
   annotations: {}
   hosts:
-    - host: your-domain.com
+    - host: a765f9247ecf1444e82fdf7ed797ed29-bc6ee899f3a7f3a6.elb.us-east-1.amazonaws.com
+      http:
       paths:
         - path: /
           pathType: Prefix
-          service: frontend
-          port: 8080
+          backend:
+            service:
+              name: frontend
+              port:
+                number: 8080
+        - path: /static
+          pathType: Prefix
+          backend:
+            service:
+              name: frontend
+              port:
+                number: 8080
+        - path: /api/checkout(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: checkoutservice
+              port:
+                number: 5050
+        - path: /api/cart(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: cartservice
+              port:
+                number: 7070
+        - path: /api/products(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: productcatalogservice
+              port:
+                number: 3550
+        - path: /api/currency(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: currencyservice
+              port:
+                number: 7000
+        - path: /api/recommendation(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: recommendationservice
+              port:
+                number: 5002
+        - path: /api/shipping(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: shippingservice
+              port:
+                number: 8081
+        - path: /api/payment(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: paymentservice
+              port:
+                number: 3002
+        - path: /api/email(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: emailservice
+              port:
+                number: 5001
+        - path: /api/ads(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: adservice
+              port:
+                number: 9555
+        - path: /api/shopping-assistant(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: shoppingassistantservice
+              port:
+                number: 8005
   tls: []
 
 # Global resource defaults

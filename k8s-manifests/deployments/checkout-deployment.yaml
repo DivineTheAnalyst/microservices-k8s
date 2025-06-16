@@ -18,8 +18,8 @@ spec:
         ports:
         - containerPort: 5050
         envFrom:
-        - configMapRef:
-            name: checkout-config
+        - secretRef:
+            name: checkout-config-secret
 
 ---
 

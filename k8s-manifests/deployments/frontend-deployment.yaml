@@ -36,8 +36,8 @@ spec:
         ports: 
         - containerPort: 8080
         envFrom:
-        - configMapRef:
-            name: frontend-config
+        - secretRef:
+            name: frontend-config-secret
         env:
         - name: DISABLE_PROFILER
           value: "true"
@@ -62,4 +62,3 @@ spec:
     port: 8080
     targetPort: 8080
   type: ClusterIP
-        

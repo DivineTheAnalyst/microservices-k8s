@@ -18,8 +18,8 @@ spec:
         ports:
         - containerPort: 5002
         envFrom:
-        - configMapRef:
-            name: recommendation-config
+        - secretRef:
+            name: recommendation-config-secret
     
 ---
 

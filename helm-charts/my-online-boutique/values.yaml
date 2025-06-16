@@ -207,20 +207,29 @@ services:
       maxReplicas: 3
       targetCPUUtilizationPercentage: 50
 
-# Shared ConfigMaps
-configMaps:
-  serviceAddresses:
-    PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice:3550"
-    CURRENCY_SERVICE_ADDR: "currencyservice:7000"
-    CART_SERVICE_ADDR: "cartservice:7070"
-    RECOMMENDATION_SERVICE_ADDR: "recommendationservice:5002"
-    SHIPPING_SERVICE_ADDR: "shippingservice:8081"
-    CHECKOUT_SERVICE_ADDR: "checkoutservice:5050"
-    AD_SERVICE_ADDR: "adservice:9555"
-    PAYMENT_SERVICE_ADDR: "paymentservice:3002"
-    EMAIL_SERVICE_ADDR: "emailservice:5001"
-    SHOPPING_ASSISTANT_SERVICE_ADDR: "shoppingassistantservice:8005"
-    REDIS_HOST: "redis:6379"
+# External Secrets configuration
+externalSecrets:
+  enabled: true
+  refreshInterval: 15s
+  secretStore:
+    name: aws-secrets-store
+  aws:
+    region: us-east-1
+    credentialsSecret: aws-credentials  # References existing secret
+    secretKey: microservices/services   # AWS Secrets Manager key name
+
+  secretKeys:
+    - PRODUCT_CATALOG_SERVICE_ADDR
+    - CURRENCY_SERVICE_ADDR
+    - CART_SERVICE_ADDR
+    - RECOMMENDATION_SERVICE_ADDR
+    - SHIPPING_SERVICE_ADDR
+    - CHECKOUT_SERVICE_ADDR
+    - AD_SERVICE_ADDR
+    - PAYMENT_SERVICE_ADDR
+    - EMAIL_SERVICE_ADDR
+    - SHOPPING_ASSISTANT_SERVICE_ADDR
+    - REDIS_HOST
 
 # Ingress configuration
 ingress:
@@ -228,7 +237,7 @@ ingress:
   className: "app-nginx"
   annotations: {}
   hosts:
-    - host: a765f9247ecf1444e82fdf7ed797ed29-bc6ee899f3a7f3a6.elb.us-east-1.amazonaws.com
+    - host: a713f33313acb42b681e575bfcd5f6d4-f60753852b1729e5.elb.us-east-1.amazonaws.com 
       http:
       paths:
         - path: /

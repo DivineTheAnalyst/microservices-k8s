@@ -35,13 +35,13 @@ spec:
         {{- end }}
         {{- if eq $serviceName "frontend" }}
         envFrom:
-        - configMapRef:
-            name: service-addresses
+        - secretRef:
+            name: service-addresses-secret
         {{- end }}
         {{- if eq $serviceName "checkoutservice" }}
         envFrom:
-        - configMapRef:
-            name: service-addresses
+        - secretRef:
+            name: service-addresses-secret
         {{- end }}
         {{- if eq $serviceName "paymentservice" }}
         env:
@@ -50,13 +50,13 @@ spec:
         - name: DISABLE_PROFILER
           value: "true"
         envFrom:
-        - configMapRef:
-            name: service-addresses
+        - secretRef:
+            name: service-addresses-secret
         {{- end }}
         {{- if eq $serviceName "recommendationservice" }}
         envFrom:
-        - configMapRef:
-            name: service-addresses
+        - secretRef:
+            name: service-addresses-secret
         {{- end }}
 {{- end }}
 {{- end }}

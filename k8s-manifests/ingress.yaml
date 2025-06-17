@@ -6,7 +6,7 @@ metadata:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:YOUR-ACCOUNT:certificate/YOUR-CERT-ID
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:221693237976:certificate/6222f1a6-6e82-4fee-835c-9599347bfe9d
     alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
@@ -14,10 +14,10 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - a713f33313acb42b681e575bfcd5f6d4-f60753852b1729e5.elb.us-east-1.amazonaws.com
+    - a7d77c5cdb58946318f17f031eeedcdc-7de973ba1c56da15.elb.us-east-1.amazonaws.com
     secretName: app-tls-secret  # For cert-manager
   rules:
-  - host: a713f33313acb42b681e575bfcd5f6d4-f60753852b1729e5.elb.us-east-1.amazonaws.com 
+  - host: a7d77c5cdb58946318f17f031eeedcdc-7de973ba1c56da15.elb.us-east-1.amazonaws.com
     http:
       paths:
       - path: /

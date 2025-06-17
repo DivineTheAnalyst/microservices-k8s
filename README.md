@@ -11,6 +11,16 @@
 
 **Online Boutique** is a cloud-native microservices demo application deployed on **AWS EKS** using modern DevOps practices. This project demonstrates how to deploy a production-ready e-commerce application with 11 microservices using **Helm Charts**, **External Secrets Operator**, and **NGINX Ingress Controller**.
 
+> **🔧 Custom Implementation**: This is a complete re-implementation of Google's microservices demo. All original Helm charts, Dockerfiles, and Kubernetes manifests were removed and rebuilt from scratch to demonstrate enterprise-grade deployment patterns, security best practices, and AWS-native integrations.
+
+## 🌟 What Makes This Different
+
+- **Built from Scratch**: Complete custom Helm charts with production-ready configurations
+- **AWS-Native**: Leverages AWS Secrets Manager, EKS, and ELB integrations
+- **Security-First**: External Secrets Operator, security headers, and rate limiting
+- **Production-Ready**: Resource limits, health checks, and horizontal pod autoscaling
+- **Enterprise Patterns**: Proper secret management and ingress configuration
+
 ## 🏗️ Architecture Overview
 
 This implementation transforms Google's microservices demo into a production-ready AWS EKS deployment with enterprise-grade security and operational practices.

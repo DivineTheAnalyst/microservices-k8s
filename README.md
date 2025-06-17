@@ -3,164 +3,279 @@
 </p> -->
 ![Continuous Integration](https://github.com/GoogleCloudPlatform/microservices-demo/workflows/Continuous%20Integration%20-%20Main/Release/badge.svg)
 
-**Online Boutique** is a cloud-first microservices demo application.  The application is a
-web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
+# Online Boutique Microservices on AWS EKS
 
-Google uses this application to demonstrate how developers can modernize enterprise applications using Google Cloud products, including: [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine), [Cloud Service Mesh (CSM)](https://cloud.google.com/service-mesh), [gRPC](https://grpc.io/), [Cloud Operations](https://cloud.google.com/products/operations), [Spanner](https://cloud.google.com/spanner), [Memorystore](https://cloud.google.com/memorystore), [AlloyDB](https://cloud.google.com/alloydb), and [Gemini](https://ai.google.dev/). This application works on any Kubernetes cluster.
+![Architecture](https://img.shields.io/badge/Architecture-Microservices-blue)
+![Platform](https://img.shields.io/badge/Platform-AWS%20EKS-orange)
+![Deployment](https://img.shields.io/badge/Deployment-Helm-green)
+![Security](https://img.shields.io/badge/Security-External%20Secrets-red)
 
-If you’re using this demo, please **★Star** this repository to show your interest!
+**Online Boutique** is a cloud-native microservices demo application deployed on **AWS EKS** using modern DevOps practices. This project demonstrates how to deploy a production-ready e-commerce application with 11 microservices using **Helm Charts**, **External Secrets Operator**, and **NGINX Ingress Controller**.
 
-**Note to Googlers:** Please fill out the form at [go/microservices-demo](http://go/microservices-demo).
+## 🏗️ Architecture Overview
 
-## Architecture
+This implementation transforms Google's microservices demo into a production-ready AWS EKS deployment with enterprise-grade security and operational practices.
 
-**Online Boutique** is composed of 11 microservices written in different
-languages that talk to each other over gRPC.
+[![Architecture Diagram](/docs/img/architecture-diagram.png)](/docs/img/architecture-diagram.png)
 
-[![Architecture of
-microservices](/docs/img/architecture-diagram.png)](/docs/img/architecture-diagram.png)
+### 🔧 Technology Stack
 
-Find **Protocol Buffers Descriptions** at the [`./protos` directory](/protos).
+- **Container Orchestration**: AWS EKS (Kubernetes 1.28+)
+- **Package Management**: Helm 3.x
+- **Secret Management**: AWS Secrets Manager + External Secrets Operator
+- **Ingress Controller**: NGINX Ingress Controller
+- **Service Mesh**: gRPC communication between services
+- **Infrastructure**: AWS (EKS, Secrets Manager, ELB)
 
-| Service                                              | Language      | Description                                                                                                                       |
-| ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [frontend](/src/frontend)                           | Go            | Exposes an HTTP server to serve the website. Does not require signup/login and generates session IDs for all users automatically. |
-| [cartservice](/src/cartservice)                     | C#            | Stores the items in the user's shopping cart in Redis and retrieves it.                                                           |
-| [productcatalogservice](/src/productcatalogservice) | Go            | Provides the list of products from a JSON file and ability to search products and get individual products.                        |
-| [currencyservice](/src/currencyservice)             | Node.js       | Converts one money amount to another currency. Uses real values fetched from European Central Bank. It's the highest QPS service. |
-| [paymentservice](/src/paymentservice)               | Node.js       | Charges the given credit card info (mock) with the given amount and returns a transaction ID.                                     |
-| [shippingservice](/src/shippingservice)             | Go            | Gives shipping cost estimates based on the shopping cart. Ships items to the given address (mock)                                 |
-| [emailservice](/src/emailservice)                   | Python        | Sends users an order confirmation email (mock).                                                                                   |
-| [checkoutservice](/src/checkoutservice)             | Go            | Retrieves user cart, prepares order and orchestrates the payment, shipping and the email notification.                            |
-| [recommendationservice](/src/recommendationservice) | Python        | Recommends other products based on what's given in the cart.                                                                      |
-| [adservice](/src/adservice)                         | Java          | Provides text ads based on given context words.                                                                                   |
-| [loadgenerator](/src/loadgenerator)                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.                                              |
+## 🎯 Key Features
 
-## Screenshots
+- ✅ **Production-Ready Deployment** with Helm Charts
+- ✅ **Secure Secret Management** using AWS Secrets Manager
+- ✅ **External Secrets Operator** for automated secret synchronization
+- ✅ **NGINX Ingress** with security headers and rate limiting
+- ✅ **Multi-language Microservices** (Go, C#, Node.js, Python, Java)
+- ✅ **Horizontal Pod Autoscaling** configuration
+- ✅ **Production-grade Security** headers and policies
 
-| Home Page                                                                                                         | Checkout Screen                                                                                                    |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [![Screenshot of store homepage](/docs/img/online-boutique-frontend-1.png)](/docs/img/online-boutique-frontend-1.png) | [![Screenshot of checkout screen](/docs/img/online-boutique-frontend-2.png)](/docs/img/online-boutique-frontend-2.png) |
+## 🏪 Microservices Architecture
 
-## Quickstart (GKE)
+| Service | Language | Description | Port |
+|---------|----------|-------------|------|
+| **Frontend** | Go | Web UI and user session management | 8080 |
+| **Cart Service** | C# | Shopping cart management with Redis | 7070 |
+| **Product Catalog** | Go | Product inventory and search | 3550 |
+| **Currency Service** | Node.js | Real-time currency conversion | 7000 |
+| **Payment Service** | Node.js | Payment processing (mock) | 3002 |
+| **Shipping Service** | Go | Shipping cost calculation | 8081 |
+| **Email Service** | Python | Order confirmation emails | 5001 |
+| **Checkout Service** | Go | Order orchestration | 5050 |
+| **Recommendation** | Python | ML-based product recommendations | 5002 |
+| **Ad Service** | Java | Contextual advertisements | 9555 |
+| **Shopping Assistant** | Go | AI-powered shopping assistant | 8005 |
 
-1. Ensure you have the following requirements:
-   - [Google Cloud project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
-   - Shell environment with `gcloud`, `git`, and `kubectl`.
+## 🚀 Quick Start
 
-2. Clone the latest major version.
+### Prerequisites
 
-   ```sh
-   git clone --depth 1 --branch v0 https://github.com/GoogleCloudPlatform/microservices-demo.git
-   cd microservices-demo/
-   ```
+- AWS CLI configured with appropriate permissions
+- kubectl installed and configured
+- Helm 3.x installed
+- eksctl installed
 
-   The `--depth 1` argument skips downloading git history.
+### 1. Clone the Repository
 
-3. Set the Google Cloud project and region and ensure the Google Kubernetes Engine API is enabled.
+```bash
+git clone https://github.com/DivineTheAnalyst/microservices-k8s.git
+cd microservices-k8s
+```
 
-   ```sh
-   export PROJECT_ID=<PROJECT_ID>
-   export REGION=us-central1
-   gcloud services enable container.googleapis.com \
-     --project=${PROJECT_ID}
-   ```
+### 2. Create EKS Cluster
 
-   Substitute `<PROJECT_ID>` with the ID of your Google Cloud project.
+```bash
+# Create EKS cluster
+eksctl create cluster \
+  --name ije-cluster \
+  --region us-east-1 \
+  --nodes 3 \
+  --nodes-min 2 \
+  --nodes-max 4 \
+  --node-type t3.medium \
+  --managed
 
-4. Create a GKE cluster and get the credentials for it.
+# Verify cluster access
+kubectl get nodes
+```
 
-   ```sh
-   gcloud container clusters create-auto online-boutique \
-     --project=${PROJECT_ID} --region=${REGION}
-   ```
+### 3. Install External Secrets Operator
 
-   Creating the cluster may take a few minutes.
+```bash
+# Install External Secrets Operator
+helm repo add external-secrets https://charts.external-secrets.io
+helm install external-secrets external-secrets/external-secrets -n external-secrets-system --create-namespace
+```
 
-5. Deploy Online Boutique to the cluster.
+### 4. Configure AWS Secrets Manager
 
-   ```sh
-   kubectl apply -f ./release/kubernetes-manifests.yaml
-   ```
+```bash
+# Create secret in AWS Secrets Manager
+aws secretsmanager create-secret \
+  --name microservices/services \
+  --secret-string '{
+    "PRODUCT_CATALOG_SERVICE_ADDR":"productcatalogservice:3550",
+    "CURRENCY_SERVICE_ADDR":"currencyservice:7000",
+    "CART_SERVICE_ADDR":"cartservice:7070",
+    "RECOMMENDATION_SERVICE_ADDR":"recommendationservice:5002",
+    "SHIPPING_SERVICE_ADDR":"shippingservice:8081",
+    "CHECKOUT_SERVICE_ADDR":"checkoutservice:5050",
+    "AD_SERVICE_ADDR":"adservice:9555",
+    "PAYMENT_SERVICE_ADDR":"paymentservice:3002",
+    "EMAIL_SERVICE_ADDR":"emailservice:5001",
+    "SHOPPING_ASSISTANT_SERVICE_ADDR":"shoppingassistantservice:8005",
+    "REDIS_HOST":"redis:6379"
+  }' \
+  --region us-east-1
+```
 
-6. Wait for the pods to be ready.
+### 5. Deploy Application with Helm
 
-   ```sh
-   kubectl get pods
-   ```
+```bash
+# Create namespace
+kubectl create namespace online-boutique
 
-   After a few minutes, you should see the Pods in a `Running` state:
+# Deploy application
+helm install online-boutique ./helm-charts/my-online-boutique/ --namespace online-boutique
 
-   ```
-   NAME                                     READY   STATUS    RESTARTS   AGE
-   adservice-76bdd69666-ckc5j               1/1     Running   0          2m58s
-   cartservice-66d497c6b7-dp5jr             1/1     Running   0          2m59s
-   checkoutservice-666c784bd6-4jd22         1/1     Running   0          3m1s
-   currencyservice-5d5d496984-4jmd7         1/1     Running   0          2m59s
-   emailservice-667457d9d6-75jcq            1/1     Running   0          3m2s
-   frontend-6b8d69b9fb-wjqdg                1/1     Running   0          3m1s
-   loadgenerator-665b5cd444-gwqdq           1/1     Running   0          3m
-   paymentservice-68596d6dd6-bf6bv          1/1     Running   0          3m
-   productcatalogservice-557d474574-888kr   1/1     Running   0          3m
-   recommendationservice-69c56b74d4-7z8r5   1/1     Running   0          3m1s
-   redis-cart-5f59546cdd-5jnqf              1/1     Running   0          2m58s
-   shippingservice-6ccc89f8fd-v686r         1/1     Running   0          2m58s
-   ```
+# Verify deployment
+kubectl get pods -n online-boutique
+```
 
-7. Access the web frontend in a browser using the frontend's external IP.
+### 6. Install NGINX Ingress Controller
 
-   ```sh
-   kubectl get service frontend-external | awk '{print $4}'
-   ```
+```bash
+# Install NGINX Ingress
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml
 
-   Visit `http://EXTERNAL_IP` in a web browser to access your instance of Online Boutique.
+# Apply ingress configuration
+kubectl apply -f k8s-manifests/ingress.yaml
+```
 
-8. Congrats! You've deployed the default Online Boutique. To deploy a different variation of Online Boutique (e.g., with Google Cloud Operations tracing, Istio, etc.), see [Deploy Online Boutique variations with Kustomize](#deploy-online-boutique-variations-with-kustomize).
+### 7. Access the Application
 
-9. Once you are done with it, delete the GKE cluster.
+```bash
+# Get external IP
+kubectl get service ingress-nginx-controller -n ingress-nginx
 
-   ```sh
-   gcloud container clusters delete online-boutique \
-     --project=${PROJECT_ID} --region=${REGION}
-   ```
+# Access application
+curl http://<EXTERNAL-IP>
+```
 
-   Deleting the cluster may take a few minutes.
+## 📁 Project Structure
 
-## Additional deployment options
+```
+microservices-k8s/
+├── helm-charts/
+│   └── my-online-boutique/
+│       ├── Chart.yaml
+│       ├── values.yaml
+│       └── templates/
+│           ├── deployments/
+│           ├── services/
+│           ├── external-secrets.yaml
+│           └── hpa.yaml
+├── k8s-manifests/
+|   ├── deployments
+|   ├── external-secrets
+|   ├── HPA
+|   ├── RBAC
+|   ├── secrets
+│   ├── ingress.yaml
+│   ├── ClusterIssuer.yaml
+│   └── secretstore.yaml
+├── src/
+│   ├── frontend/
+│   ├── cartservice/
+│   └── [other microservices]
+└── docs/
+    └── img/
+```
 
-- **Terraform**: [See these instructions](/terraform) to learn how to deploy Online Boutique using [Terraform](https://www.terraform.io/intro).
-- **Istio / Cloud Service Mesh**: [See these instructions](/kustomize/components/service-mesh-istio/README.md) to deploy Online Boutique alongside an Istio-backed service mesh.
-- **Non-GKE clusters (Minikube, Kind, etc)**: See the [Development guide](/docs/development-guide.md) to learn how you can deploy Online Boutique on non-GKE clusters.
-- **AI assistant using Gemini**: [See these instructions](/kustomize/components/shopping-assistant/README.md) to deploy a Gemini-powered AI assistant that suggests products to purchase based on an image.
-- **And more**: The [`/kustomize` directory](/kustomize) contains instructions for customizing the deployment of Online Boutique with other variations.
+## 🔒 Security Features
 
-## Documentation
+- **External Secrets Operator**: Automated secret synchronization from AWS Secrets Manager
+- **NGINX Security Headers**: XSS protection, content type options, frame options
+- **Rate Limiting**: 100 requests total, 10 RPS per client
+- **Resource Limits**: CPU and memory constraints for all services
+- **Network Policies**: Controlled inter-service communication
 
-- [Development](/docs/development-guide.md) to learn how to run and develop this app locally.
+## 📊 Monitoring & Observability
 
-## Demos featuring Online Boutique
+- **Health Checks**: Liveness and readiness probes for all services
+- **Horizontal Pod Autoscaling**: Automatic scaling based on CPU utilization
+- **Ingress Monitoring**: Request logging and metrics
+- **Resource Monitoring**: CPU, memory, and network usage tracking
 
-- [Platform Engineering in action: Deploy the Online Boutique sample apps with Score and Humanitec](https://medium.com/p/d99101001e69)
-- [The new Kubernetes Gateway API with Istio and Anthos Service Mesh (ASM)](https://medium.com/p/9d64c7009cd)
-- [Use Azure Redis Cache with the Online Boutique sample on AKS](https://medium.com/p/981bd98b53f8)
-- [Sail Sharp, 8 tips to optimize and secure your .NET containers for Kubernetes](https://medium.com/p/c68ba253844a)
-- [Deploy multi-region application with Anthos and Google cloud Spanner](https://medium.com/google-cloud/a2ea3493ed0)
-- [Use Google Cloud Memorystore (Redis) with the Online Boutique sample on GKE](https://medium.com/p/82f7879a900d)
-- [Use Helm to simplify the deployment of Online Boutique, with a Service Mesh, GitOps, and more!](https://medium.com/p/246119e46d53)
-- [How to reduce microservices complexity with Apigee and Anthos Service Mesh](https://cloud.google.com/blog/products/application-modernization/api-management-and-service-mesh-go-together)
-- [gRPC health probes with Kubernetes 1.24+](https://medium.com/p/b5bd26253a4c)
-- [Use Google Cloud Spanner with the Online Boutique sample](https://medium.com/p/f7248e077339)
-- [Seamlessly encrypt traffic from any apps in your Mesh to Memorystore (redis)](https://medium.com/google-cloud/64b71969318d)
-- [Strengthen your app's security with Cloud Service Mesh and Anthos Config Management](https://cloud.google.com/service-mesh/docs/strengthen-app-security)
-- [From edge to mesh: Exposing service mesh applications through GKE Ingress](https://cloud.google.com/architecture/exposing-service-mesh-apps-through-gke-ingress)
-- [Take the first step toward SRE with Cloud Operations Sandbox](https://cloud.google.com/blog/products/operations/on-the-road-to-sre-with-cloud-operations-sandbox)
-- [Deploying the Online Boutique sample application on Cloud Service Mesh](https://cloud.google.com/service-mesh/docs/onlineboutique-install-kpt)
-- [Anthos Service Mesh Workshop: Lab Guide](https://codelabs.developers.google.com/codelabs/anthos-service-mesh-workshop)
-- [KubeCon EU 2019 - Reinventing Networking: A Deep Dive into Istio's Multicluster Gateways - Steve Dake, Independent](https://youtu.be/-t2BfT59zJA?t=982)
-- Google Cloud Next'18 SF
-  - [Day 1 Keynote](https://youtu.be/vJ9OaAqfxo4?t=2416) showing GKE On-Prem
-  - [Day 3 Keynote](https://youtu.be/JQPOPV_VH5w?t=815) showing Stackdriver
-    APM (Tracing, Code Search, Profiler, Google Cloud Build)
-  - [Introduction to Service Management with Istio](https://www.youtube.com/watch?v=wCJrdKdD6UM&feature=youtu.be&t=586)
-- [Google Cloud Next'18 London – Keynote](https://youtu.be/nIq2pkNcfEI?t=3071)
-  showing Stackdriver Incident Response Management
+## 🛠️ Development
+
+### Local Development
+
+```bash
+# Port forward to frontend service
+kubectl port-forward -n online-boutique svc/frontend 8080:8080
+
+# Access application locally
+open http://localhost:8080
+```
+
+### Update Configuration
+
+```bash
+# Update Helm values
+helm upgrade online-boutique ./helm-charts/my-online-boutique/ --namespace online-boutique
+
+# Update secrets in AWS Secrets Manager
+aws secretsmanager update-secret --secret-id microservices/services --secret-string '{...}'
+```
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+**External Secrets not syncing:**
+```bash
+kubectl describe externalsecret -n online-boutique
+kubectl logs -n external-secrets-system -l app.kubernetes.io/name=external-secrets
+```
+
+**Pods in CreateContainerConfigError:**
+```bash
+# Check if secrets exist
+kubectl get secrets -n online-boutique
+kubectl describe pod <pod-name> -n online-boutique
+```
+
+**Ingress not working:**
+```bash
+kubectl describe ingress app-ingress
+kubectl get endpoints -n online-boutique
+```
+
+## 📈 Scaling
+
+### Horizontal Pod Autoscaling
+
+```bash
+# Check HPA status
+kubectl get hpa -n online-boutique
+
+# Manually scale deployment
+kubectl scale deployment frontend-deployment --replicas=3 -n online-boutique
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Original Google Cloud microservices demo
+- AWS EKS documentation
+- External Secrets Operator community
+- NGINX Ingress Controller maintainers
+
+## 📞 Support
+
+For questions and support:
+- 📧 Email: dnkwocha14@gmail.com
+- 💬 GitHub Issues: [Create an issue](https://github.com/DivineTheAnalyst/microservices-k8s/issues)
+
+---
+
+⭐ **Star this repository if you found it helpful!**
